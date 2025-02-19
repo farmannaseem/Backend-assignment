@@ -10,7 +10,32 @@ const resumeRoutes = require('./routes/resume');
 const searchRoutes = require('./routes/search');
 
 const app = express();
+
+// Basic route for testing
+app.get('/', (req, res) => {
+  res.status(200).send({
+    status: 'success',
+    message: 'Welcome to Resume Analysis API',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth/login',
+      resume: '/api/resume/enrich',
+      search: '/api/search'
+    }
+  });
+});
+
+// Then your other middleware and routes
 app.use(express.json());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).json({});
+  }
+  next();
+});
 
 // Add this before the connectDB function
 console.log('Attempting to connect with URI:', process.env.MONGODB_URI.replace(/<password>/, '****'));
@@ -39,28 +64,25 @@ const connectDB = async () => {
 
 connectDB();
 
-// Add CORS middleware
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-    return res.status(200).json({});
-  }
-  next();
-});
-
+// Your API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/resume', resumeRoutes);
 app.use('/api/search', searchRoutes);
 
-// Basic error handling
+// Add this after all your routes
+app.use('*', (req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: 'Route not found'
+  });
+});
+
+// Error handling middleware
 app.use((error, req, res, next) => {
-  res.status(error.status || 500);
-  res.json({
-    error: {
-      message: error.message
-    }
+  console.error('Error:', error);
+  res.status(error.status || 500).json({
+    status: 'error',
+    message: error.message || 'Internal server error'
   });
 });
 
