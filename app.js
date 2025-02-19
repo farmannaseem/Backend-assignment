@@ -19,10 +19,9 @@ console.log('Attempting to connect with URI:', process.env.MONGODB_URI.replace(/
 const connectDB = async () => {
   try {
     const options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
+      authSource: 'admin',
     };
 
     await mongoose.connect(process.env.MONGODB_URI, options);
