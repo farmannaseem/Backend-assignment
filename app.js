@@ -17,7 +17,6 @@ const connectDB = async () => {
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-      tlsCAFile: `${__dirname}/ca-certificate.crt` // If using X.509 authentication
     };
 
     await mongoose.connect(process.env.MONGODB_URI, options);
