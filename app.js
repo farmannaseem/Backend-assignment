@@ -26,6 +26,10 @@ const connectDB = async () => {
     console.log('Connected to MongoDB Atlas');
   } catch (error) {
     console.error('MongoDB connection error:', error.message);
+    console.log('Please check:');
+    console.log('1. MongoDB Atlas IP whitelist');
+    console.log('2. Database username and password');
+    console.log('3. Database connection string format');
     // Retry connection after 5 seconds
     setTimeout(connectDB, 5000);
   }
