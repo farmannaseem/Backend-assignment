@@ -12,6 +12,9 @@ const searchRoutes = require('./routes/search');
 const app = express();
 app.use(express.json());
 
+// Add this before the connectDB function
+console.log('Attempting to connect with URI:', process.env.MONGODB_URI.replace(/<password>/, '****'));
+
 // MongoDB connection with retry logic
 const connectDB = async () => {
   try {
