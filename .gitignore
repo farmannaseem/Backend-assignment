@@ -1,2 +1,6 @@
 node_modules/
-.env 
+.env
+.env.development
+
+# Don't exclude example env file
+!.env.example 

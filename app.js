@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+// Set strictQuery to false to prepare for Mongoose 7
+mongoose.set('strictQuery', false);
+
 const authRoutes = require('./routes/auth');
 const resumeRoutes = require('./routes/resume');
 const searchRoutes = require('./routes/search');
@@ -22,7 +25,7 @@ const connectDB = async () => {
     await mongoose.connect(process.env.MONGODB_URI, options);
     console.log('Connected to MongoDB Atlas');
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error('MongoDB connection error:', error.message);
     // Retry connection after 5 seconds
     setTimeout(connectDB, 5000);
   }
